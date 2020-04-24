@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="board">
+	
+	<select id="boardList" resultType="boardDto">
+		select * from board order by board_no desc
+	</select>
+
+	<insert id="regist" parameterType="boardDto">
+		insert into board values(
+					(select *from (select max(board_no)+1 from board) next),
+					#{board_head},#{board_title},now(),#{board_writer},0,
+					#{board_pw},#{board_content}
+		);
+	</insert>
+	
+	<select id="getSequence" resultType="int">
+		select (select *from (select max(board_no)+1 from board) next) from dual;
+	</select>
+	
+	<select id="fileGetSequence" resultType="int">
+		select (select *from (select max(file_no)+1 from file) next) from dual;
+	</select>
+	
+</mapper>
+
+
+
