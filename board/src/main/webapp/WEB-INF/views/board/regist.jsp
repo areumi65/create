@@ -94,7 +94,21 @@
 		}
  	
  </style>
-    
+ <script>
+ 
+	$(function(){
+		var uploadFile = $('.fupload .f-form .uploadBtn');
+		uploadFile.on('change', function(){
+			if(window.FileReader){
+				var filename = $(this)[0].files[0].name;
+			} else {
+				var filename = $(this).val().split('/').pop().split('\\').pop();
+			}
+			$(this).siblings('.fileName').val(filename);
+		})
+	});
+ 
+ </script>  
  
  <form action="regist"  method="post" enctype="Multipart/form-data">
 	 <div id="regist">   
@@ -134,15 +148,18 @@
 			</tr>
 		</table>
 				<div class="fupload">
-					<div>
+					<div class="f-form">
 						<input type="text" class="fileName form-control" readonly="readonly" placeholder="파일 업로드">
 						<label for="uploadBtn" class="btn_file btn btn-light">찾아보기</label>
 						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
 					</div>
 				</div>
+					
+	
+	
 			<div class="btn-wrap">
 				<div class="btn-wrap-le">
-					<a href="../index.jsp" >
+					<a href="/board/list" >
 						<input type="button" value="목록보기" class="btn btn-secondary">
 						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
 					</a>

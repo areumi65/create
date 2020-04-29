@@ -19,7 +19,6 @@
 		text-decoration:none;
 	}
 	
-	 a:link { color: red; text-decoration: none;}
 	 a:visited { color: black; text-decoration: none;}
 	 a:hover { color: #666; text-decoration: none;}
 

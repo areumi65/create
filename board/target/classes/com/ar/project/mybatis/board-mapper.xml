@@ -7,24 +7,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="board">
 	
-	<select id="boardList" resultType="boardDto">
-		select * from board order by board_no desc
+	<select id="boardList" resultType="boardDto" parameterType="pagingVo">
+		select * from board 
+		order by board_no desc limit #{startIndex},#{countPerPage}
 	</select>
 
 	<insert id="regist" parameterType="boardDto">
 		insert into board values(
-					(select *from (select max(board_no)+1 from board) next),
+					#{board_no},
 					#{board_head},#{board_title},now(),#{board_writer},0,
 					#{board_pw},#{board_content}
-		);
+		)
 	</insert>
 	
-	<select id="getSequence" resultType="int">
-		select (select *from (select max(board_no)+1 from board) next) from dual;
+	<select id="getBoardSequence" resultType="int">
+		select (select * from (select max(board_no)+1 from board) next) from dual
 	</select>
 	
-	<select id="fileGetSequence" resultType="int">
-		select (select *from (select max(file_no)+1 from file) next) from dual;
+	<select id="getFileSequence" resultType="int">
+		select (select * from (select max(file_no)+1 from file) next) from dual
+	</select>
+	
+	<insert id="upload" parameterType="int">
+		insert into file values(
+			#{file_no},
+			#{file_uploadname},
+			#{file_savename},
+			#{file_type},
+			#{file_size},
+			#{board_no}
+		)
+	</insert>
+	
+	<select id="listCount" resultType="int" >
+		select count(*) from board
+	</select>
+	
+	<select id="view" resultType="boardDto" parameterType="int">
+		select * from board where board_no = #{board_no}
 	</select>
 	
 </mapper>

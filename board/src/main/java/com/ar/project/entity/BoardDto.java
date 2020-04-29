@@ -22,9 +22,5 @@ public class BoardDto {
 	private String reply_writer, reply_wtite_date, reply_content;
 	
 	
-	private int file_no;
-	private String file_uploadname, file_savename, file_type;
-	private long file_size;
-	
 	
 }

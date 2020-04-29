@@ -3,56 +3,74 @@ package com.ar.project.repository;
 import java.io.File;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ar.project.entity.BoardDto;
+import com.ar.project.entity.FileDto;
+import com.ar.project.entity.PagingVO;
 
 @Repository
 public class BoardDaoImpl implements BoardDao{
 
+	private File dir = new File("D:/upload");
+	
+	@PostConstruct
+	public void init() {
+		dir.mkdirs();
+	}
+	
 	@Autowired
 	private SqlSession sqlSession;
 	
 	
 	@Override
-	public List<BoardDto> boardList() {
-		return sqlSession.selectList("board.boardList");
+	public List<BoardDto> boardList(PagingVO pagingVo) {
+		return sqlSession.selectList("board.boardList",pagingVo);
 	}
 
 
 	@Override
 	public int getBoardSequence() {
-		return sqlSession.selectOne("board.getSequence");
+		return sqlSession.selectOne("board.getBoardSequence");
 	}
 
 
 	@Override
-	public int fileGetSequence() {
-		return sqlSession.selectOne("board.fileGetSequence");
+	public int getFileSequence() {
+		return sqlSession.selectOne("board.getFileSequence");
 	}
 
 	
 	@Override
-	public void regist(BoardDto boardDto, MultipartFile multipartFile) {
-		
-		int board_no = getBoardSequence();
-		int file_no = fileGetSequence();
-		
-		boardDto.setBoard_no(board_no);
-//		boardDto.setBoard_pw(board_pw);
-		
-		File dir = new File("D:/upload");
-		dir.mkdir();
-		
-		File target = new File(dir, String.valueOf(file_no));
-		boardDto.setBoard_no(board_no);
-		boardDto.setFile_no(file_no);
+	public void regist(BoardDto boardDto) {
 		sqlSession.insert("board.regist",boardDto);
 		
 	}
+
+
+	@Override
+	public void upload(FileDto fileDto) {
+		sqlSession.insert("board.upload",fileDto);
+	}
+
+
+	@Override
+	public int listCount() {
+		return sqlSession.selectOne("board.listCount");
+	}
+
+
+	@Override
+	public BoardDto view(int board_no) {
+		return sqlSession.selectOne("board.view",board_no);
+	}
+
+
 	
 	
 }
