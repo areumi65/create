@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ar.project.entity.BoardDto;
 import com.ar.project.entity.FileDto;
 import com.ar.project.entity.PagingVO;
+import com.ar.project.service.PageMaker;
 
 @Repository
 public class BoardDaoImpl implements BoardDao{
@@ -29,8 +30,8 @@ public class BoardDaoImpl implements BoardDao{
 	
 	
 	@Override
-	public List<BoardDto> boardList(PagingVO pagingVo) {
-		return sqlSession.selectList("board.boardList",pagingVo);
+	public List<BoardDto> boardList(PageMaker pageMaker) {
+		return sqlSession.selectList("board.boardList",pageMaker);
 	}
 
 
@@ -68,6 +69,24 @@ public class BoardDaoImpl implements BoardDao{
 	@Override
 	public BoardDto view(int board_no) {
 		return sqlSession.selectOne("board.view",board_no);
+	}
+
+
+	@Override
+	public void readCount(int board_no) {
+		sqlSession.update("board.readCount", board_no);
+	}
+
+
+	@Override
+	public List<BoardDto> listAsc(PageMaker pageMaker) {
+		return sqlSession.selectList("board.listAsc",pageMaker);
+	}
+
+
+	@Override
+	public void edit(BoardDto boardDto) {
+		sqlSession.update("board.edit",boardDto);
 	}
 
 

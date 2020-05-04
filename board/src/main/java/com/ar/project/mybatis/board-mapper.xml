@@ -7,9 +7,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="board">
 	
-	<select id="boardList" resultType="boardDto" parameterType="pagingVo">
+	<select id="boardList" resultType="boardDto" >
 		select * from board 
-		order by board_no desc limit #{startIndex},#{countPerPage}
+		order by board_no desc limit #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="listAsc"  resultType="boardDto">
+		select * from board order by board_write_date asc;
 	</select>
 
 	<insert id="regist" parameterType="boardDto">
@@ -19,6 +23,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					#{board_pw},#{board_content}
 		)
 	</insert>
+	
+	<update id="edit" parameterType="boardDto">
+		update board 
+		set
+				board_head = #{board_head}, 
+				board_title = #{board_title},
+				board_content = #{board_content}
+		where
+				board_no= #{board_no}
+	</update>
 	
 	<select id="getBoardSequence" resultType="int">
 		select (select * from (select max(board_no)+1 from board) next) from dual
@@ -46,6 +60,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="view" resultType="boardDto" parameterType="int">
 		select * from board where board_no = #{board_no}
 	</select>
+	
+	<update id="readCount" parameterType="int">
+		update board set board_readCount = board_readCount+1 where board_no = #{board_no}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from board where board_no = #{board_no}
+	</delete>
 	
 </mapper>
 

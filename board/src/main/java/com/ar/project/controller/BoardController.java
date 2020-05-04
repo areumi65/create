@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ar.project.entity.BoardDto;
-import com.ar.project.entity.FileDto;
-import com.ar.project.entity.PagingVO;
 import com.ar.project.repository.BoardDao;
+import com.ar.project.service.BoardService;
 import com.ar.project.service.FileService;
-import com.ar.project.service.Pagination;
+import com.ar.project.service.PageMaker;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,26 +27,26 @@ public class BoardController {
 	@Autowired
 	private BoardDao boardDao;
 	
+	@Autowired
+	private BoardService boardService;
 	
 	@GetMapping("/")
 	public String main() {
-		
-		
 		return "index";
 	}
 	
 	@GetMapping("/board/list")
-	public String main(Model model, @ModelAttribute PagingVO pagingVo, @RequestParam(defaultValue="1") int curPage) {
+	public String main(Model model, PageMaker pageMaker) {
 		
 		int listCount = boardDao.listCount();
-		Pagination pagination = new Pagination(listCount,curPage);
-		pagingVo.setStartIndex(pagination.getStartIndex()+1);
-		pagingVo.setCountPerPage(pagination.getPageSize()+pagination.getStartIndex());
-		List<BoardDto> boardList = boardDao.boardList(pagingVo);
-		
+		List<BoardDto> boardList = boardDao.boardList(pageMaker);
+		List<BoardDto> listAsc = boardDao.listAsc(pageMaker);
+		model.addAttribute("listAsc",listAsc);
 		model.addAttribute("boardList", boardList);
-		model.addAttribute("listCount",listCount);
-		model.addAttribute("pagination",pagination);
+		pageMaker.setTotalCount(listCount);
+		model.addAttribute("pageMaker",pageMaker);
+		
+		
 		
 //		log.info("listCount={}", listCount);
 //		log.info("boarList ={}", boardList);
@@ -71,25 +69,40 @@ public class BoardController {
 		boardDto.setBoard_no(board_no);
 //		fileDto.setBoard_no(board_no);
 		boardDao.regist(boardDto);
-		
 //		int file_no = boardDao.getFileSequence();
 //		model.addAttribute("board_no", boardDto.getBoard_no());
 //		fileDto.setFile_no(file_no);
 //		fileService.upload(fileDto);
 		
-		return "redirect:/";
+		return "redirect: ../board/list";
 	}
 	
 	
 	@GetMapping("/board/view")
 	public String view(Model model, @RequestParam int board_no) {
 		
+		int readCount = 0;
+		boardService.readCount(board_no);
+		model.addAttribute("board_readcount", readCount);
 		model.addAttribute("boardDto", boardDao.view(board_no));
-		
+		model.addAttribute("board_no",board_no);
 		return "board/view";
 	}
 	
 	
+	@GetMapping("/board/edit")
+	public String edit(Model model, @RequestParam int board_no) {
+		model.addAttribute("boardDto", boardDao.view(board_no));
+		model.addAttribute("board_no",board_no);
+		return "board/edit";
+	}
 	
+	@PostMapping("/board/edit")
+	public String edit(Model model, @ModelAttribute BoardDto boardDto, @RequestParam int board_no) {
+		model.addAttribute("board_no",board_no);
+		boardDao.edit(boardDto);
+		return "redirect:../board/view";
+		
+	}
 	
 }

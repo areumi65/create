@@ -12,6 +12,4 @@ import lombok.NoArgsConstructor;
 public class PagingVO {
 	private String type;
 	private String value;
-	private int startIndex;
-	private int countPerPage;
 }

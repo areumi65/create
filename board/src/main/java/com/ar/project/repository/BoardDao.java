@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ar.project.entity.BoardDto;
 import com.ar.project.entity.FileDto;
 import com.ar.project.entity.PagingVO;
+import com.ar.project.service.PageMaker;
 
 public interface BoardDao {
 
@@ -14,7 +15,11 @@ public interface BoardDao {
 		void regist(BoardDto boardDto);
 		int getFileSequence();
 		void upload(FileDto fileDto);
-		List<BoardDto> boardList(PagingVO pagingVo);
+		List<BoardDto> boardList(PageMaker pageMaker);
 		int listCount();
 		BoardDto view(int board_no);
+		void readCount(int board_no);
+		List<BoardDto> listAsc(PageMaker pageMaker);
+		void edit(BoardDto boardDto);
+		
 }

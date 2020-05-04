@@ -1,9 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">    
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="../header.jsp"></jsp:include>
+ 
+ <script>
+	function goBack(){
+		location.href=document.referrer;
+	} 
+ </script>
  
  <style>
  	#regist{
@@ -64,12 +69,12 @@
 		</table>
 		<div class="btn-wrap">
 			<div style="float: left">
-				<a href="${pageContext.request.contextPath}/board/list" >
-					<input type="button" class="btn btn-secondary" value="목록보기">
-				</a>
+					<input type="button" class="btn btn-secondary" value="목록보기" onclick="goBack();">
 			</div>
 			<div style="float: right">
-				<button type="submit" class="btn btn-primary" >수정</button>
+				<a href="${pageContext.request.contextPath}/board/edit?board_no=${boardDto.board_no}">
+					<button type="submit" class="btn btn-primary" >수정</button>
+				</a>
 				<button type="submit" class="btn btn-secondary" >삭제</button>
 			</div>
 		</div>

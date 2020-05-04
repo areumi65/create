@@ -3,8 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-
 <jsp:include page="../header.jsp"></jsp:include>
+
+<script>
+
+$('.dropdown-toggle').dropdown();
+
+// $('.dropdown-toggle').dropdown('toggle')
+
+</script>
 	
 <style>
 
@@ -39,11 +46,25 @@
 		width:100%;
 	}
 	
-	.nav  .pagination{
+	.nav  nav{
 		margin:0 auto;
 	}
 	
-</style>	
+</style>
+
+
+	
+	<div class="dropdown">
+	  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    Dropdown button
+	  </button>
+	  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+	    <a class="dropdown-item" href="#">오래된순</a>
+	    <a class="dropdown-item" href="#">유머</a>
+	    <a class="dropdown-item" href="#">정보</a>
+	    <a class="dropdown-item" href="#">기타</a>
+	  </div>
+	</div>
 	
 	
 	<div class="blist">
@@ -81,33 +102,29 @@
 					</div>
 					
 					<div class="nav">
-									<ul class="pagination" style="justify-content: center;">
-					                    <c:if test="${pagination.curPage ne 1}">
-					                    	<li class="page-item disabled">
-					                        	<a class="page-link" href="#" onClick="fn_paging('${pagination.prevPage }')">&laquo;</a> 
-					                        </li>
-					                    </c:if>
-					                    <c:forEach var="pageNum" begin="${pagination.startPage }" end="${pagination.endPage }">
-					                        <c:choose>
-					                            <c:when test="${pageNum eq  pagination.curPage}">
-					                            	<li class="page-item active">
-												      <span style="font-weight: bold;"><a class="page-link" href="#" onClick="fn_paging('${pageNum }')">${pageNum }</a></span>
-												    </li>
-					                            </c:when>
-					                            <c:otherwise>
-						                            <li class="page-item">
-												      <a href="${pageContext.request.contextPath}/board/list?curPage=${pageNum}" class="page-link" onClick="fn_paging('${pageNum }')">${pageNum }</a> 
-												    </li>
-					                            </c:otherwise>
-					                        </c:choose>
-					                    </c:forEach>
-					                    <c:if test="${pagination.curPage ne pagination.pageCount && pagination.pageCount > 0}">
-					                    	<li class="page-item">
-					                        	<a href="#" class="page-link" onClick="fn_paging('${pagination.nextPage }')">&raquo;</a> 
-					                    	</li>
-					                    </c:if> 
-					                </ul>
-			              </div>
+					<nav aria-label="Page navigation example">
+                          <ul class="pagination">
+                             <c:if test="${pageMaker.prev}">
+                                <li class="page-item" ><a class="page-link" aria-label="Previous" href="list${pageMaker.makeQuery(pageMaker.startPage -1)}">&laquo;</a></li>
+                             </c:if>
+                           
+                             <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage}" var="idx">
+                                 <li class="page-item" 
+	                                   <c:out value="${pageMaker.page ==idx? 'class=active' : ''}" />
+	                               >   
+	                                   <a class="page-link" href="list${pageMaker.makeQuery(idx)}">${idx}</a>
+                                   </li>
+                             </c:forEach> 
+                              
+                             <c:if test="${pageMaker.next && pageMaker.endPage >0 }">
+                                <li class="page-item" ><a class="page-link" aria-label="Next" href="list${pageMaker.makeQuery(pageMaker.endPage +1)}">&raquo;</a></li>
+                             </c:if>
+                           
+                          </ul>
+                       
+                       </nav>   
+                          
+			         </div>
 							              
 									
 					
