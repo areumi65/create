@@ -90,6 +90,14 @@ public class BoardDaoImpl implements BoardDao{
 	}
 
 
+	@Override
+	public void delete(int board_no) {
+		sqlSession.delete("board.delete",board_no);
+	}
+
+
+
+
 	
 	
 }

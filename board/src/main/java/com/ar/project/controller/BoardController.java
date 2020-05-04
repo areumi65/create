@@ -102,7 +102,12 @@ public class BoardController {
 		model.addAttribute("board_no",board_no);
 		boardDao.edit(boardDto);
 		return "redirect:../board/view";
-		
 	}
 	
+	@GetMapping("/board/delete")
+	public String delete(@RequestParam int board_no) {
+		boardDao.delete(board_no);
+		return "redirect:../board/list";
+		
+	}
 }

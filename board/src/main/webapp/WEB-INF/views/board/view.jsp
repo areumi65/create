@@ -72,10 +72,12 @@
 					<input type="button" class="btn btn-secondary" value="목록보기" onclick="goBack();">
 			</div>
 			<div style="float: right">
-				<a href="${pageContext.request.contextPath}/board/edit?board_no=${boardDto.board_no}">
+				<a href="${pageContext.request.contextPath}/board/edit?board_no=${param.board_no}">
 					<button type="submit" class="btn btn-primary" >수정</button>
 				</a>
-				<button type="submit" class="btn btn-secondary" >삭제</button>
+				<a href="${pageContext.request.contextPath}/board/delete?board_no=${param.board_no}">
+					<button type="submit" class="btn btn-secondary" >삭제</button>
+				</a>
 			</div>
 		</div>
 	</div>

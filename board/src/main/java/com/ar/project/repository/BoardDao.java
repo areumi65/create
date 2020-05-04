@@ -21,5 +21,5 @@ public interface BoardDao {
 		void readCount(int board_no);
 		List<BoardDto> listAsc(PageMaker pageMaker);
 		void edit(BoardDto boardDto);
-		
+		void delete(int board_no);
 }

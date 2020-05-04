@@ -93,24 +93,67 @@
 			width:100px;
 		}
  	
+ 	
+ 	input{
+ 		font-size:14px;
+ 	}
+ 		
+ 	
+ 	
  </style>
  <script>
  
-	$(function(){
-		var uploadFile = $('.fupload .f-form .uploadBtn');
-		uploadFile.on('change', function(){
-			if(window.FileReader){
-				var filename = $(this)[0].files[0].name;
-			} else {
-				var filename = $(this).val().split('/').pop().split('\\').pop();
+// 	$(function(){
+// 		var uploadFile = $('.fupload .f-form .uploadBtn');
+// 		uploadFile.on('change', function(){
+// 			if(window.FileReader){
+// 				var filename = $(this)[0].files[0].name;
+// 			} else {
+// 				var filename = $(this).val().split('/').pop().split('\\').pop();
+// 			}
+// 			$(this).siblings('.fileName').val(filename);
+// 		});
+		
+		function checkForm(){
+			
+			if(!document.frm.board_head.value){
+				alert("말머리를 선택해주세요");
+				return false;
+				document.frm.board_head.focus();
 			}
-			$(this).siblings('.fileName').val(filename);
-		})
-	});
+			
+			if(!document.frm.board_title.value){
+				alert("제목을 입력해주세요");
+				return false;
+				document.frm.board_title.focus();
+			}
+			
+			if(!document.frm.board_writer.value){
+				alert("작성자를 입력해주세요");
+				return false;
+				document.frm.board_writer.focus();
+			}
+			
+			if(!document.frm.board_content.value){
+				alert("내용을 입력해주세요");
+				return false;
+				document.frm.board_content.focus();
+			}
+			
+			if(!document.frm.board_pw.value){
+				alert("비밀번호(숫자 4자리)를 입력해주세요");
+				return false;
+				document.frm.board_pw.focus();
+			}
+			
+			return true;
+		}
+		
+		
  
  </script>  
  
- <form action="regist"  method="post" enctype="Multipart/form-data">
+ <form name="frm" action="regist"  method="post" enctype="Multipart/form-data" onsubmit="return checkForm();">
 	 <div id="regist">   
 		<table>
 			<tr>
@@ -119,7 +162,7 @@
 			</tr>
 			<tr>
 				<td>
-					  <select class="form-control" id="sel1" name="board_head" required>
+					  <select class="form-control" id="sel1" name="board_head"  >
 					   		<option value="">선택하세요</option>
 							<option>정보</option>
 							<option>유머</option>
@@ -159,14 +202,14 @@
 	
 			<div class="btn-wrap">
 				<div class="btn-wrap-le">
-					<a href="/board/list" >
+					<a href="${pageContext.request.contextPath}/board/list" >
 						<input type="button" value="목록보기" class="btn btn-secondary">
 						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
 					</a>
 				</div>
 				<div class="btn-wrap-ri">
-					<input type="password" name="board_pw" class="form-control pwinput"  placeholder="비밀번호">
-					<button type="submit" class="btn btn-primary">등록</button>
+					<input type="password" name="board_pw" class="form-control pwinput"  placeholder="비밀번호 숫자 4자리">
+					<input type="submit" class="btn btn-primary" value="등록">
 				</div>
 			</div>
 	</div>

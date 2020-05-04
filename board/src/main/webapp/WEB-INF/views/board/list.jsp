@@ -2,19 +2,12 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!--  <script type="text/javascript" src="jquery.tablesorter.min.js"></script> -->
 
 <jsp:include page="../header.jsp"></jsp:include>
 
-<script>
-
-$('.dropdown-toggle').dropdown();
-
-// $('.dropdown-toggle').dropdown('toggle')
-
-</script>
 	
 <style>
-
 	.blist{
 		width:1000px;
 		margin:0 auto;
@@ -52,14 +45,21 @@ $('.dropdown-toggle').dropdown();
 	
 </style>
 
+<script>
 
+
+	 $(document).ready(function(){ 
+		$("#listT").tablesorter();
+	});
+	
+</script>
 	
 	<div class="dropdown">
 	  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	    Dropdown button
 	  </button>
 	  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-	    <a class="dropdown-item" href="#">오래된순</a>
+	    <a class="dropdown-item"  id="sort">오래된순</a>
 	    <a class="dropdown-item" href="#">유머</a>
 	    <a class="dropdown-item" href="#">정보</a>
 	    <a class="dropdown-item" href="#">기타</a>
@@ -70,7 +70,7 @@ $('.dropdown-toggle').dropdown();
 	<div class="blist">
 		<c:choose>
 			<c:when test="${boardList.size()>0}">
-					<table>
+					<table id="listT" class="tablesorter">
 						<tr>
 							<th width="10%">번호</th>
 							<th width="50%">제 목</th>
@@ -78,7 +78,7 @@ $('.dropdown-toggle').dropdown();
 							<th width="15%">작성일</th>
 							<th width="10%">조회수</th> 
 						</tr>
-						<c:forEach items="${boardList}" var="boardDto">
+							<c:forEach items="${boardList}" var="boardDto">
 							<tr>
 								<td align="center">${boardDto.board_no }</td>
 								<td>
