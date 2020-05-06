@@ -2,20 +2,41 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!--  <script type="text/javascript" src="jquery.tablesorter.min.js"></script> -->
+
+
 
 <jsp:include page="../header.jsp"></jsp:include>
+<script>
+$(document).ready(function(){
+    
+    $("#searchBtn").on("click",
+        function(event){
+          var url ="list${pageMaker.makeQuery(1)}";
+          url +="&searchType="+searchType()+"&keyword="+keywordInput();
+          self.location =url;   
+    });
+ 
+});
+ 
+function searchType(){
+    return $("#searchType").val();
+}
+ 
+function keywordInput(){
+    return $("#keywordInput").val();
+}
 
-	
+</script>	
 <style>
 	.blist{
-		width:1000px;
+		width:100%;
 		margin:0 auto;
 	}
 	
 	table{
-		width:100%;
-		margin-top:100px;
+		width:1000px;
+		margin:100 auto 0;
+		
 	}
 	
 	th{
@@ -43,34 +64,62 @@
 		margin:0 auto;
 	}
 	
+	.sortDrp {
+		width:1000px;
+		margin:0 auto;
+	}
+
+	.sortDrp > .sortBtn{
+		left:0;
+		top:50px;
+		position:absolute;
+	}
+	
+	.sortDrp >.writeBtn{
+		right:0;
+		top:50px;
+		position:absolute;
+	}
+	
+	.oldList{
+		display:none;
+	}
+	
+	
 </style>
 
 <script>
-
-
-	 $(document).ready(function(){ 
-		$("#listT").tablesorter();
-	});
 	
 </script>
-	
-	<div class="dropdown">
-	  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	    Dropdown button
-	  </button>
-	  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-	    <a class="dropdown-item"  id="sort">오래된순</a>
-	    <a class="dropdown-item" href="#">유머</a>
-	    <a class="dropdown-item" href="#">정보</a>
-	    <a class="dropdown-item" href="#">기타</a>
-	  </div>
+
+	<div class="dropdown sortDrp">
+		<div class="sortBtn">
+		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		   	sort
+		  </button>
+		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		    <a class="dropdown-item" >오래된순</a>
+		    <a class="dropdown-item" href="#">유머</a>
+		    <a class="dropdown-item" href="#">정보</a>
+		    <a class="dropdown-item" href="#">기타</a>
+		  </div>
+		</div>
+		<div class="writeBtn">
+			<a href="${pageContext.request.contextPath}/board/regist">
+				<input class="btn btn-primary" type="button" value="글쓰기">
+			</a>
+		</div>
 	</div>
+	
+	
+<article style="width:1000px; margin:0 auto; position:relative;">
 	
 	
 	<div class="blist">
 		<c:choose>
 			<c:when test="${boardList.size()>0}">
-					<table id="listT" class="tablesorter">
+				<div class="defaultList">
+					<table id="listT">
 						<tr>
 							<th width="10%">번호</th>
 							<th width="50%">제 목</th>
@@ -95,39 +144,28 @@
 							</tr>
 						</c:forEach>
 					</table>
-					<div style="float:right; margin-top:20px;">
-						<a href="${pageContext.request.contextPath}/board/regist">
-							<input class="btn btn-primary" type="button" value="글쓰기">
-						</a>
-					</div>
 					
 					<div class="nav">
 					<nav aria-label="Page navigation example">
-                          <ul class="pagination">
-                             <c:if test="${pageMaker.prev}">
-                                <li class="page-item" ><a class="page-link" aria-label="Previous" href="list${pageMaker.makeQuery(pageMaker.startPage -1)}">&laquo;</a></li>
-                             </c:if>
-                           
-                             <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage}" var="idx">
-                                 <li class="page-item" 
-	                                   <c:out value="${pageMaker.page ==idx? 'class=active' : ''}" />
-	                               >   
-	                                   <a class="page-link" href="list${pageMaker.makeQuery(idx)}">${idx}</a>
-                                   </li>
-                             </c:forEach> 
-                              
-                             <c:if test="${pageMaker.next && pageMaker.endPage >0 }">
-                                <li class="page-item" ><a class="page-link" aria-label="Next" href="list${pageMaker.makeQuery(pageMaker.endPage +1)}">&raquo;</a></li>
-                             </c:if>
-                           
-                          </ul>
-                       
+                        <ul class="pagination">
+					 	  	 <c:if test="${pageMaker.prev}">
+					 	  	 	<li><a href="memberListSearch${pageMaker.makeSearch(pageMaker.startPage -1)}">&laquo;</a></li>
+					 	  	 </c:if>
+					 	  
+					 	  	 <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage}" var="idx">
+					 	  	 	 <li
+					 	  	 	   <c:out value="${pageMaker.page ==idx? 'class=active' : ''}" />
+					 	  	 	  >
+					 	  	 	   <a href="list${pageMaker.makeSearch(idx)}">${idx}</a></li>
+					 	  	 </c:forEach>	
+					 	  	 
+					 	  	 <c:if test="${pageMaker.next && pageMaker.endPage >0 }">
+					 	  	    <li><a href="list${pageMaker.makeSearch(pageMaker.endPage +1)}">&raquo;</a></li>
+					 	  	 </c:if> 
+					 	  </ul>
                        </nav>   
-                          
 			         </div>
-							              
-									
-					
+				</div>
 				</c:when>
 				<c:otherwise>
 					<div>
@@ -137,5 +175,6 @@
 				</c:otherwise>
 		</c:choose>
 	</div>
+</article>	
 
 </body>

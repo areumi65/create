@@ -16,10 +16,9 @@ public interface BoardDao {
 		int getFileSequence();
 		void upload(FileDto fileDto);
 		List<BoardDto> boardList(PageMaker pageMaker);
-		int listCount();
+		int listCount(PageMaker pageMaker);
 		BoardDto view(int board_no);
 		void readCount(int board_no);
-		List<BoardDto> listAsc(PageMaker pageMaker);
 		void edit(BoardDto boardDto);
 		void delete(int board_no);
 }

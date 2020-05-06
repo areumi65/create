@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">   
+ <link rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">   
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 <style>
 
 	* {
@@ -45,7 +46,23 @@
 		width:1000px;
 	}
 
+
+	.drp{
+		margin-right:10px;
+
+	}
+	
+	.drp > .dropdown-menu{
+		min-width:6rem;
+	}
+	
+	.navbar{
+		width:100%;
+	}
+
 </style>
+
+
 
 <body>
 
@@ -67,10 +84,20 @@
 <!--         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
 <!--       </li> -->
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    <div class="form-inline my-2 my-lg-0">
+	   <div class=" dropdown drp">
+	  	
+	  	 <select name="searchType" class="form-control"  id="searchType">
+                 <option class="dropdown-item"  value="all" <c:out value="${pageMaker.searchType eq 'all' ? 'selected' : '' }"/>>전체</option>
+                 <option class="dropdown-item"  value="board_writer"  <c:out value="${pageMaker.searchType eq 'board_writer' ? 'selected' : '' }"/>>작성자</option>
+                 <option class="dropdown-item"  value="board_title" <c:out value="${pageMaker.searchType eq 'board_title' ? 'selected' : '' }"/>>제목</option>
+                 <option class="dropdown-item"  value="board_content" <c:out value="${pageMaker.searchType eq 'board_content' ? 'selected' : '' }"/>>내용</option>
+           </select>
+           
+		</div>
+      <input class="form-control mr-sm-2" name="keyword" id="keywordInput"  vlaue="${pageMaker.keyword }" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-primary my-2 my-sm-0" type="submit" id="btnSearch">Search</button>
+    </div>
   </div>
 </nav>
 

@@ -36,20 +36,17 @@ public class BoardController {
 	}
 	
 	@GetMapping("/board/list")
-	public String main(Model model, PageMaker pageMaker) {
+	public String main(Model model, @ModelAttribute("pageMaker") PageMaker pageMaker) {
 		
-		int listCount = boardDao.listCount();
+		int listCount = boardDao.listCount(pageMaker);
 		List<BoardDto> boardList = boardDao.boardList(pageMaker);
-		List<BoardDto> listAsc = boardDao.listAsc(pageMaker);
-		model.addAttribute("listAsc",listAsc);
 		model.addAttribute("boardList", boardList);
 		pageMaker.setTotalCount(listCount);
 		model.addAttribute("pageMaker",pageMaker);
 		
 		
-		
-//		log.info("listCount={}", listCount);
-//		log.info("boarList ={}", boardList);
+		log.info("listCount={}", listCount);
+		log.info("boardList ={}", boardList);
 		
 		return "board/list";
 	}

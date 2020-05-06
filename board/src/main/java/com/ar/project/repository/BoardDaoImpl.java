@@ -61,8 +61,8 @@ public class BoardDaoImpl implements BoardDao{
 
 
 	@Override
-	public int listCount() {
-		return sqlSession.selectOne("board.listCount");
+	public int listCount(PageMaker pageMaker) {
+		return sqlSession.selectOne("board.listCount", pageMaker);
 	}
 
 
@@ -77,11 +77,6 @@ public class BoardDaoImpl implements BoardDao{
 		sqlSession.update("board.readCount", board_no);
 	}
 
-
-	@Override
-	public List<BoardDto> listAsc(PageMaker pageMaker) {
-		return sqlSession.selectList("board.listAsc",pageMaker);
-	}
 
 
 	@Override

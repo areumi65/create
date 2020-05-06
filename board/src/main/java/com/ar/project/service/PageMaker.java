@@ -3,8 +3,11 @@ package com.ar.project.service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import lombok.Builder;
+import lombok.Builder.Default;
+
 public class PageMaker {
-	 //mysql 들어갈 값은 page 가 아니라 pageStart, perPageNum 이다.
+    //mysql 들어갈 값은 page 가 아니라 pageStart, perPageNum 이다.
     //limit #{pageStart}, #{perPageNum}
     private int page;
     private int perPageNum;
@@ -19,7 +22,13 @@ public class PageMaker {
      
     private int displayPageNum=10;
      
-    private int tempEndPage;
+    private int tempEndPage; //마지막 페이지
+     
+    //검색처리 추가
+    @Builder.Default
+    private String searchType = "board_title";
+    private String keyword;
+     
      
     public PageMaker() {
         this.page=1;          //초기 페이지는 1 
@@ -83,7 +92,7 @@ public class PageMaker {
     }
      
      
-     
+    //일반적인 페이징 처리 파라미터 출력 데이터 ex) /memberList?page=4&perPageNum=10
     public String makeQuery(int page){
         UriComponents uriComponents=
                 UriComponentsBuilder.newInstance()
@@ -93,7 +102,7 @@ public class PageMaker {
         return uriComponents.toUriString();
     }
      
-     
+    //일반적인 페이징 부트스트랩 출력
     public String bootStrapPagingHTML(String url){
        StringBuffer sBuffer=new StringBuffer();
        sBuffer.append("<ul class='pagination'>");
@@ -129,7 +138,57 @@ public class PageMaker {
         return sBuffer.toString();
     }
      
+     
+    //검색 추가 페이지 파라미터 
+    public String makeSearch(int page){
+        UriComponents uriComponents=
+                UriComponentsBuilder.newInstance()
+                .queryParam("page", page)
+                .queryParam("perPageNum", perPageNum)
+                .queryParam("searchType", searchType)
+                .queryParam("keyword", keyword)
+                .build();
+        return uriComponents.toUriString();
+    }
+     
+     
+     
+    //검색 추가 페이징 부트스트랩 출력
+    public String bootStrapPagingSearchHTML(String url){
+       StringBuffer sBuffer=new StringBuffer();
+       sBuffer.append("<ul class='pagination'>");
+       if(prev){
+           sBuffer.append("<li><a href='"+url+makeSearch(1)+"'>처음</a></li>");
+       }
+        
+       if(prev){
+           sBuffer.append("<li><a href='"+url+makeSearch(startPage-1)+"'>&laquo;</a></li>");
+       }
+ 
+        String active="";
+        for(int i=startPage; i <=endPage; i++){
+            if(page==i){
+                 active="class=active";
+            }else{
+                active="";
+            }
+            sBuffer.append("<li " +active+" >");
+            sBuffer.append("<a href='"+url+makeSearch(i)+"'>"+i+"</a></li>");
+            sBuffer.append("</li>");
+        }
          
+        if(next && endPage>0){
+            sBuffer.append("<li><a href='"+url+makeSearch(endPage+1)+"'>&raquo;</a></li>");         
+        }
+         
+        if(next && endPage>0){
+            sBuffer.append("<li><a href='"+url+makeSearch(tempEndPage)+"'>마지막</a></li>");           
+        }       
+         
+        sBuffer.append("</ul>");  
+        return sBuffer.toString();
+    }
+     
      
      
      
@@ -204,13 +263,35 @@ public class PageMaker {
     }
  
  
+    public String getSearchType() {
+        return searchType;
+    }
+ 
+ 
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+ 
+ 
+    public String getKeyword() {
+        return keyword;
+    }
+ 
+ 
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+ 
+     
+ 
     @Override
     public String toString() {
-        return "PageMaker [page=" + page + ", perPageNum=" + perPageNum + ", pageStart=" + pageStart + ", totalCount="
-                + totalCount + ", startPage=" + startPage + ", endPage=" + endPage + ", prev=" + prev + ", next=" + next
-                + ", displayPageNum=" + displayPageNum + "]";
+        return "PageMakerAndSearch [page=" + page + ", perPageNum=" + perPageNum + ", pageStart=" + pageStart
+                + ", totalCount=" + totalCount + ", startPage=" + startPage + ", endPage=" + endPage + ", prev=" + prev
+                + ", next=" + next + ", displayPageNum=" + displayPageNum + ", tempEndPage=" + tempEndPage
+                + ", searchType=" + searchType + ", keyword=" + keyword + "]";
     }
-     
+ 
 
     
 }
