@@ -3,30 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-
-
 <jsp:include page="../header.jsp"></jsp:include>
-<script>
-$(document).ready(function(){
-    
-    $("#searchBtn").on("click",
-        function(event){
-          var url ="list${pageMaker.makeQuery(1)}";
-          url +="&searchType="+searchType()+"&keyword="+keywordInput();
-          self.location =url;   
-    });
- 
-});
- 
-function searchType(){
-    return $("#searchType").val();
-}
- 
-function keywordInput(){
-    return $("#keywordInput").val();
-}
 
-</script>	
 <style>
 	.blist{
 		width:100%;
@@ -42,9 +20,10 @@ function keywordInput(){
 	th{
 		text-align:center;
 		padding:14px;
-		border-top:2px solid #444;
-		border-bottom:2px solid #444;
+		border-top:1px solid #444;
+		border-bottom:1px solid #444;
 	}
+	
 	td{
 		padding:16px;
 		border-bottom:1px solid #999;
@@ -56,13 +35,19 @@ function keywordInput(){
 	}
 	
 	.nav{
-		margin-top:70px;
+		margin-top:20px;
 		width:100%;
 	}
 	
-	.nav  nav{
+	.nav  > nav
+	{
 		margin:0 auto;
 	}
+	
+	.srch > div{
+		margin:0 atuo;
+	}
+	
 	
 	.sortDrp {
 		width:1000px;
@@ -73,27 +58,58 @@ function keywordInput(){
 		left:0;
 		top:50px;
 		position:absolute;
+		float:left;
 	}
 	
-	.sortDrp >.writeBtn{
+	.drp{
 		right:0;
 		top:50px;
 		position:absolute;
 	}
 	
-	.oldList{
-		display:none;
+	.writeBtn{
+		text-align:right;
+		margin-top:10px;	
 	}
 	
+	#headSelect{
+	}
 	
 </style>
 
 <script>
-	
-</script>
+$(function(){
+    
+    $("#btnSearch").click(function(){
+    	self.location = "list" 
+    							+ '${pageMaker.makeQuery(1)}' 
+						    	+ "&searchType=" 
+						    	+ $("select option:selected").val() 
+						    	+ "&keyword=" 
+						    	+ encodeURIComponent($('#keywordInput').val()); 
+    });
+    
+ 
+});
+ 
+function searchType(){
+    return $("#searchType").val();
+}
+ 
+function keywordInput(){
+    return $("#keywordInput").val();
+}
+
+
+function goBack(){
+	location.href=document.referrer;
+} 
+
+</script>	
+
 
 	<div class="dropdown sortDrp">
-		<div class="sortBtn">
+		<div class="sortBtn" style="float:left">
 		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		   	sort
 		  </button>
@@ -103,12 +119,30 @@ function keywordInput(){
 		    <a class="dropdown-item" href="#">정보</a>
 		    <a class="dropdown-item" href="#">기타</a>
 		  </div>
+		  <div style="float:right; margin-left: 10px" >
+			  <p style="font-size:13px; font-weight:600; line-height:3.5rem;" >총 "${listCount }" 개의 게시물</p>
+		  </div>
 		</div>
-		<div class="writeBtn">
-			<a href="${pageContext.request.contextPath}/board/regist">
-				<input class="btn btn-primary" type="button" value="글쓰기">
-			</a>
-		</div>
+			<div class="form-inline my-2 my-lg-0 srch">
+	         	<div>
+				   <div class=" dropdown drp">
+				  	 <select name="searchType" class="form-control"  id="searchType">
+			                 <option class="dropdown-item"  value="all" <c:out value="${pageMaker.searchType eq 'all' ? 'selected' : '' }"/>> 전체</option>
+			                 <option class="dropdown-item" id="headType"  value="board_head" <c:out value="${pageMaker.searchType eq 'board_head' ? 'selected' : '' }"/>> 말머리</option>
+			                 <option class="dropdown-item"  value="board_writer"  <c:out value="${pageMaker.searchType eq 'board_writer' ? 'selected' : '' }"/>> 작성자</option>
+			                 <option class="dropdown-item"  value="board_title" <c:out value="${pageMaker.searchType eq 'board_title' ? 'selected' : '' }"/>> 제목</option>
+			                 <option class="dropdown-item"  value="board_content" <c:out value="${pageMaker.searchType eq 'board_content' ? 'selected' : '' }"/>> 내용</option>
+			           </select>
+			           <select name="searchType" class="form-control"  id="headSelect">
+			                 <option class="dropdown-item"  value="board_head" <c:out value="${pageMaker.searchType eq 'board_head' ? 'selected' : '' }"/>> 유머</option>
+			                 <option class="dropdown-item"  value="board_writer"  <c:out value="${pageMaker.searchType eq 'board_writer' ? 'selected' : '' }"/>> 정보</option>
+			                 <option class="dropdown-item"  value="board_title" <c:out value="${pageMaker.searchType eq 'board_title' ? 'selected' : '' }"/>> 기타</option>
+			           </select>
+				      <input class="form-control mr-sm-2" name="keyword" id="keywordInput"  value="${pageMaker.keyword }" type="search" placeholder="검색어를 입력하세요" aria-label="Search">
+				      <button class="btn btn-primary my-2 my-sm-0" type="submit" id="btnSearch">검색</button>
+					</div>
+	         	</div>
+			</div>
 	</div>
 	
 	
@@ -116,8 +150,6 @@ function keywordInput(){
 	
 	
 	<div class="blist">
-		<c:choose>
-			<c:when test="${boardList.size()>0}">
 				<div class="defaultList">
 					<table id="listT">
 						<tr>
@@ -127,6 +159,8 @@ function keywordInput(){
 							<th width="15%">작성일</th>
 							<th width="10%">조회수</th> 
 						</tr>
+						<c:choose>
+							<c:when test="${boardList.size()>0}">
 							<c:forEach items="${boardList}" var="boardDto">
 							<tr>
 								<td align="center">${boardDto.board_no }</td>
@@ -143,38 +177,64 @@ function keywordInput(){
 								<td align="right">${boardDto.board_readcount}</td>
 							</tr>
 						</c:forEach>
+						</c:when>
+						<c:when test="${listCount<1 }">
+								<tr>
+									<td colspan="5" align="center" style="padding:150px 0 150px;">
+									검색 결과가 없습니다.
+									<div style="margin-top:20px;">
+											<a  href="${pageContext.request.contextPath}/board/list">
+												<input type="button" class="btn btn-secondary" value="목록보기" >
+											</a>
+									</div>
+									</td>
+								</tr>
+						</c:when>
+						<c:otherwise>
+								<tr>
+									<td colspan="5" align="center" style="padding:150px 0 150px;">
+									게시글이 없습니다.
+									<div style="margin-top:20px;">
+											<a  href="${pageContext.request.contextPath}/board/regist">
+												<input type="button" class="btn btn-secondary" value="글 등록하기" >
+											</a>
+									</div>
+									</td>
+								</tr>
+						</c:otherwise>
+					</c:choose>
 					</table>
-					
+					<div class="writeBtn">
+						<a href="${pageContext.request.contextPath}/board/regist">
+							<input class="btn btn-primary" type="button" value="글쓰기">
+						</a>
+					</div>
+				</div>
+
+					<!------------------------------------------------- 페이징------------------------------------------->
 					<div class="nav">
 					<nav aria-label="Page navigation example">
                         <ul class="pagination">
 					 	  	 <c:if test="${pageMaker.prev}">
-					 	  	 	<li><a href="memberListSearch${pageMaker.makeSearch(pageMaker.startPage -1)}">&laquo;</a></li>
+					 	  	 	<li class="page-item">
+						 	  	 	<a class="page-link" href="list${pageMaker.makeSearch(pageMaker.startPage -1)}">
+						 	  	 	&laquo;
+						 	  	 	</a></li>
 					 	  	 </c:if>
 					 	  
 					 	  	 <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage}" var="idx">
-					 	  	 	 <li
-					 	  	 	   <c:out value="${pageMaker.page ==idx? 'class=active' : ''}" />
-					 	  	 	  >
-					 	  	 	   <a href="list${pageMaker.makeSearch(idx)}">${idx}</a></li>
+						 	  	 	 <li class="page-item ${pageMaker.page ==idx?  "class=active":"" }">
+							 	  	 	   <a class="page-link" href="list${pageMaker.makeSearch(idx)}">${idx}</a></li>
 					 	  	 </c:forEach>	
 					 	  	 
 					 	  	 <c:if test="${pageMaker.next && pageMaker.endPage >0 }">
-					 	  	    <li><a href="list${pageMaker.makeSearch(pageMaker.endPage +1)}">&raquo;</a></li>
+					 	  	    <li class="page-item"><a class="page-link" href="list${pageMaker.makeSearch(pageMaker.endPage +1)}">&raquo;</a></li>
 					 	  	 </c:if> 
 					 	  </ul>
                        </nav>   
 			         </div>
 				</div>
-				</c:when>
-				<c:otherwise>
-					<div>
-						<p>게시글이 없습니다. <br> 글을 등록하세요.</p>
-						<button>글 등록하기</button>
-					</div>
-				</c:otherwise>
-		</c:choose>
-	</div>
+				
 </article>	
 
 </body>

@@ -197,14 +197,12 @@
 						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
 					</div>
 				</div>
-					
-	
 	
 			<div class="btn-wrap">
 				<div class="btn-wrap-le">
 					<a href="${pageContext.request.contextPath}/board/list" >
-						<input type="button" value="목록보기" class="btn btn-secondary">
-						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
+						<input type="button" value="목록보기" class="btn btn-outline-info">
+						<button type="reset"  class="btn btn-secondary">초기화</button>
 					</a>
 				</div>
 				<div class="btn-wrap-ri">

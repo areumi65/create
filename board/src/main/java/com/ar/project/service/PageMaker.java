@@ -25,9 +25,8 @@ public class PageMaker {
     private int tempEndPage; //마지막 페이지
      
     //검색처리 추가
-    @Builder.Default
-    private String searchType = "board_title";
-    private String keyword;
+    private String searchType="";
+    private String keyword="";
      
      
     public PageMaker() {
@@ -102,42 +101,6 @@ public class PageMaker {
         return uriComponents.toUriString();
     }
      
-    //일반적인 페이징 부트스트랩 출력
-    public String bootStrapPagingHTML(String url){
-       StringBuffer sBuffer=new StringBuffer();
-       sBuffer.append("<ul class='pagination'>");
-       if(prev){
-           sBuffer.append("<li><a href='"+url+makeQuery(1)+"'>처음</a></li>");
-       }
-        
-       if(prev){
-           sBuffer.append("<li><a href='"+url+makeQuery(startPage-1)+"'>&laquo;</a></li>");
-       }
- 
-        String active="";
-        for(int i=startPage; i <=endPage; i++){
-            if(page==i){
-                 active="class=active";
-            }else{
-                active="";
-            }
-            sBuffer.append("<li " +active+" >");
-            sBuffer.append("<a href='"+url+makeQuery(i)+"'>"+i+"</a></li>");
-            sBuffer.append("</li>");
-        }
-         
-        if(next && endPage>0){
-            sBuffer.append("<li><a href='"+url+makeQuery(endPage+1)+"'>&raquo;</a></li>");          
-        }
-         
-        if(next && endPage>0){
-            sBuffer.append("<li><a href='"+url+makeQuery(tempEndPage)+"'>마지막</a></li>");            
-        }       
-         
-        sBuffer.append("</ul>");  
-        return sBuffer.toString();
-    }
-     
      
     //검색 추가 페이지 파라미터 
     public String makeSearch(int page){
@@ -150,46 +113,6 @@ public class PageMaker {
                 .build();
         return uriComponents.toUriString();
     }
-     
-     
-     
-    //검색 추가 페이징 부트스트랩 출력
-    public String bootStrapPagingSearchHTML(String url){
-       StringBuffer sBuffer=new StringBuffer();
-       sBuffer.append("<ul class='pagination'>");
-       if(prev){
-           sBuffer.append("<li><a href='"+url+makeSearch(1)+"'>처음</a></li>");
-       }
-        
-       if(prev){
-           sBuffer.append("<li><a href='"+url+makeSearch(startPage-1)+"'>&laquo;</a></li>");
-       }
- 
-        String active="";
-        for(int i=startPage; i <=endPage; i++){
-            if(page==i){
-                 active="class=active";
-            }else{
-                active="";
-            }
-            sBuffer.append("<li " +active+" >");
-            sBuffer.append("<a href='"+url+makeSearch(i)+"'>"+i+"</a></li>");
-            sBuffer.append("</li>");
-        }
-         
-        if(next && endPage>0){
-            sBuffer.append("<li><a href='"+url+makeSearch(endPage+1)+"'>&raquo;</a></li>");         
-        }
-         
-        if(next && endPage>0){
-            sBuffer.append("<li><a href='"+url+makeSearch(tempEndPage)+"'>마지막</a></li>");           
-        }       
-         
-        sBuffer.append("</ul>");  
-        return sBuffer.toString();
-    }
-     
-     
      
      
     public int getPage() {

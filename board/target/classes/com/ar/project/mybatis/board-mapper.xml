@@ -8,7 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="board">
 	
 	<sql id="search">
-		<if test="searchType != null and keyword !='' ">
+		<if test="searchType != null">
 			<if test="searchType == 'board_title'.toString()">
 				and board_title like CONCAT('%', #{keyword}, '%')
 			</if>
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 			<if test="searchType == 'all'.toString()">
 				and ( 
-	                     board_title CONCAT('%', #{keyword}, '%')
+	                     board_title like CONCAT('%', #{keyword}, '%')
 	                    OR
 	                     board_head like CONCAT('%', #{keyword}, '%')
 	                    OR
@@ -35,9 +35,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 	</sql>
 	
+<!-- 	<sql id="orderBy"> -->
+<!-- 		<if test=""> -->
+<!-- 			order by board_no desc -->
+<!-- 		</if> -->
+<!-- 		<if test=""> -->
+<!-- 			order by board_no asc -->
+<!-- 		</if>	 -->
+<!-- 	</sql> -->
+	
+	
 	<select id="boardList" resultType="boardDto" >
 		select * from board  where board_no > 0
 			<include refid="search"></include>
+<!-- 			<include refid="orderBy"></include> -->
 		order by board_no desc
 		limit #{pageStart}, #{perPageNum}
 	</select>
