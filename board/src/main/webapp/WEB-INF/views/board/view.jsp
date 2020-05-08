@@ -8,6 +8,16 @@
 	function goBack(){
 		location.href=document.referrer;
 	} 
+	
+	$(function(){
+	    
+	    $("#deleteBtn").click(function(){
+	    	return confirm("정말 삭제하시겠습니까?");
+	    });
+	    
+	 
+	});
+	
  </script>
  
  <style>
@@ -76,7 +86,7 @@
 					<button type="submit" class="btn btn-primary" >수정</button>
 				</a>
 				<a href="${pageContext.request.contextPath}/board/delete?board_no=${param.board_no}">
-					<button type="submit" class="btn btn-secondary" >삭제</button>
+					<button type="submit" class="btn btn-secondary" id="deleteBtn" >삭제</button>
 				</a>
 			</div>
 		</div>
