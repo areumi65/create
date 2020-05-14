@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="../header.jsp"></jsp:include>
- 
  <script>
 	function goBack(){
 		location.href=document.referrer;
@@ -36,6 +35,18 @@
  	tr,td{
  		padding:12px;
  		border-bottom:1px solid #ececec;
+ 	}
+ 	.con{
+ 		border-style:none;
+ 	}
+ 	
+ 	.file-wrap > td{
+ 	 padding-bottom:40px;
+ 	}
+ 	
+ 	.file-wrap p{
+		border-radius:4px;
+		font-weight:bold;				
  	}
  	
  	.btn-wrap{
@@ -73,8 +84,25 @@
 					</div>
 				</td>
 			</tr>
-			<tr>
-				<td style="padding:55px 20px;">${boardDto.board_content }</td>
+			<tr class="con">
+				<td class="con" style="padding:50px 20px 100px;">${boardDto.board_content }</td>
+			</tr>
+			<tr class="file-wrap">
+				<td>
+					<div style="float:left; margin-right:20px;">
+						<p>첨부파일</p>
+					</div>
+					<div style="float:left">
+						<c:forEach var="fileDto" items="${fileList}">
+							<div style="margin-bottom:10px;">
+								<a href="download?file_no=${fileDto.file_no}">
+									<i class="fas fa-fw fa-download" style="color:#333; margin-right:5px"></i>${fileDto.file_uploadname }
+									&nbsp;&nbsp;&nbsp; <font style="font-size:14px; line-height:16px">${fileDto.file_size } byte</font>
+								</a>
+							</div>
+						</c:forEach>
+					</div>
+				</td>
 			</tr>
 		</table>
 		<div class="btn-wrap">

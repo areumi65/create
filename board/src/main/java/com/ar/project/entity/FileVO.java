@@ -1,5 +1,9 @@
 package com.ar.project.entity;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PagingVO {
-	private String type;
-	private String value;
+public class FileVO {
+	private List<MultipartFile> file;
 }

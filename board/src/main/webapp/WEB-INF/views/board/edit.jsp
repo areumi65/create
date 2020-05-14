@@ -24,13 +24,13 @@
  	}
  	
  	.btn-wrap{
- 		margin-top:80px;
+ 		margin-top:20px;
  		width:100%;
  		height:40px;
  	}
  	
- 	.btn-wrap .btn-wrap-le{
-		position:absolute;
+ 		.btn-wrap .btn-wrap-le{
+		float:left;
  	}
  	
  	.btn-wrap .btn-wrap-ri{
@@ -56,10 +56,6 @@
 		width:100%;
 	}
 	
-	.fupload > div{
-		position: absolute;
-		left:0;
-	}
 	
 	.fupload .fileName {
 		   display:inline-block;
@@ -73,15 +69,14 @@
 	}
 	
 	
- 	.fupload input[type="file"] {
-		   position:absolute;
+ 	input[type="file"] {
 		   width:1px;
 		   height:1px;
 		   padding:0;
-		   margin:-1px;
+		   margin:-10px;
 		   overflow:hidden;
 		   clip:rect(0,0,0,0);
-		   border:0
+		   border:0;
 		}
  	
  	.fupload .btn_file {
@@ -94,24 +89,92 @@
 			width:100px;
 		}
  	
+ 	
+ 	input{
+ 		font-size:14px;
+ 	}
+ 		
+ 		#resetBtn{
+ 			display:none;
+ 		}
+ 		
+ 	.list-group-item{
+ 		padding: 0.35rem 1.25rem;
+ 	}
+ 	
  </style>
  <script>
  
+ var uploadFiles = [];
+ var deleteFileArr =[];
 	$(function(){
-		var uploadFile = $('.fupload .f-form .uploadBtn');
-		uploadFile.on('change', function(){
-			if(window.FileReader){
-				var filename = $(this)[0].files[0].name;
-			} else {
-				var filename = $(this).val().split('/').pop().split('\\').pop();
+		var uploadFile = $('.uploadBtn');
+		uploadFile.on('change', function(e){
+			var files = e.target.files;
+			console.log(files);
+			$('#resetBtn').show();
+			
+			for(var i=0; i<files.length; i++){
+				var file = files[i];
+				var $li = $(
+				'<li class="list-group-item d-flex justify-content-between align-items-center">' +
+					file.name + 
+//				'	<button type="button" class="close" aria-label="Close" onclick="deleteFile(this)">' +
+//				'		<span aria-hidden="true">&times;</span>' +
+//				'	</button>' +
+				'</li>'
+				);
+				 $('ul.list-group').append($li);
 			}
-			$(this).siblings('.fileName').val(filename);
-		})
+			
+		});
+		
 	});
- 
+	
+	function deleteFile(file_no,$this){
+		deleteFileArr.push(file_no);//삭제 누를때마다 파일 쌓이는것
+		$("input[name=deleteFileNo]").val(deleteFileArr.join());//join() : 매개변수가 있으면 쉼표(기본값)으로 연결. (1,2,3....)
+		$($this).parent().parent("li").remove();
+	}
+	
+	function resetFile(){
+		$("#uploadBtn").attr("type","text");
+		$("#uploadBtn").attr("type","file");
+	}
+	
+	
+	function checkForm(){
+		
+		if(!document.frm.board_head.value){
+			alert("말머리를 선택해주세요");
+			document.frm.board_head.focus();
+			return false;
+		}
+		
+		if(!document.frm.board_title.value){
+			alert("제목을 입력해주세요");
+			document.frm.board_title.focus();
+			return false;
+		}
+		
+		if(!document.frm.board_writer.value){
+			alert("작성자를 입력해주세요");
+			document.frm.board_writer.focus();
+			return false;
+		}
+		
+		if(!document.frm.board_content.value){
+			alert("내용을 입력해주세요");
+			document.frm.board_content.focus();
+			return false;
+		}
+		
+		return true;
+	}
+	
  </script>  
  
- <form action="edit"  method="post" enctype="Multipart/form-data">
+ <form name="formName" action="edit"  method="post" enctype="Multipart/form-data" onsubmit="return checkForm();">
 	 <div id="regist">
 		<table>
 			<tr>
@@ -121,7 +184,7 @@
 			<tr>
 				<td>
 					  <select class="form-control" id="sel1" name="board_head" required>
-					   		<option value="" >${boardDto.board_head }</option>
+					   		<option value="${boardDto.board_head }" >${boardDto.board_head }</option>
 							<option>정보</option>
 							<option>유머</option>
 							<option>기타</option>
@@ -149,26 +212,40 @@
 			</tr>
 		</table>
 				<div class="fupload">
-					<div class="f-form">
-						<input type="text" class="fileName form-control" readonly="readonly" placeholder="파일 업로드">
-						<label for="uploadBtn" class="btn_file btn btn-light">찾아보기</label>
-						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
+			<div class="f-form" style="text-align:left">
+				<div class="filewrap">
+					<div style="float:left;">
+						<label for="uploadBtn" class="btn_file btn btn-light" style="float:left; margin:0 5px 5px 0">찾아보기</label>
+						<button type="button" class="btn btn-secondary" id="resetBtn" style="margin-right:5px" onclick="resetFile()">삭제</button>
 					</div>
+						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
 				</div>
-					
-	
-	
+				<ul class="list-group"  >
+				<c:forEach var="fileDto" items="${fileList}">
+					<li class="list-group-item d-flex justify-content-between align-items-center" style="z-index:2">
+						<div>
+								${fileDto.file_uploadname }
+								&nbsp;&nbsp;&nbsp; <font style="font-size:14px; line-height:16px">${fileDto.file_size } byte</font>
+								<a class="fas fa-fw fa-times" style="color:#333; margin-right:5px"  href="#none" 
+								onclick="deleteFile('${fileDto.file_no}',this)"></a>
+						</div><br>
+					</li>
+				</c:forEach>
+				</ul>
+			</div>
+		</div>
 			<div class="btn-wrap">
 				<div class="btn-wrap-le">
-					<a href="/board/list" >
+					<a href="${pageContext.request.contextPath}" >
 						<input type="button" value="목록보기" class="btn btn-secondary">
-						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
 					</a>
+						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
 				</div>
 				<div class="btn-wrap-ri">
 					<button type="submit" class="btn btn-primary">수정</button>
 				</div>
 			</div>
 	</div>
-	<input type="hidden" value="${param.board_no }" name="board_no">
+	<input type="hidden" name="deleteFileNo" />
+	<input type="hidden" name="board_no"  value="${param.board_no }">
  </form>

@@ -2,9 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
 <jsp:include page="../header.jsp"></jsp:include>
-
 <style>
 	.blist{
 		width:100%;
@@ -81,17 +79,24 @@
 $(function(){
     
     $("#btnSearch").click(function(){
-    	self.location = "list" 
-    							+ '${pageMaker.makeQuery(1)}' 
-						    	+ "&searchType=" 
-						    	+ $("select option:selected").val() 
-						    	+ "&keyword=" 
-						    	+ encodeURIComponent($('#keywordInput').val()); 
+    	getBoardList();
+    });
+    $("#sortList").change(function(){
+    	getBoardList();
     });
     
  
 });
- 
+function getBoardList(){
+   	self.location = '${pageMaker.makeQuery(1)}' 
+	    	+ "&searchType=" 
+	    	+ $("select#searchType option:selected").val() 
+	    	+ "&sortList=" 
+	    	+ $("select#sortList option:selected").val() 
+	    	+ "&keyword="
+	    	+ encodeURIComponent($('#keywordInput').val()); 
+	
+}
 function searchType(){
     return $("#searchType").val();
 }
@@ -106,19 +111,15 @@ function goBack(){
 } 
 
 </script>	
-
-
+	
 	<div class="dropdown sortDrp">
 		<div class="sortBtn" style="float:left">
-		  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		   	sort
-		  </button>
-		  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-		    <a class="dropdown-item" >오래된순</a>
-		    <a class="dropdown-item" href="#">유머</a>
-		    <a class="dropdown-item" href="#">정보</a>
-		    <a class="dropdown-item" href="#">기타</a>
-		  </div>
+			<div style="float:left">
+			  	<select name="sortList " class="form-control"  id="sortList" onchange="getBoardList">
+				    <option class="dropdown-item"  <c:out value="${pageMaker.sortList eq 'asc' ? 'selected' : ''}"/> value="asc">오래된순</option>
+				    <option class="dropdown-item" <c:out value="${pageMaker.sortList eq 'desc' ? 'selected' : ''}"/> value="desc">최신순</option>
+			  	</select>
+			</div>
 		  <div style="float:right; margin-left: 10px" >
 			  <p style="font-size:13px; font-weight:600; line-height:3.5rem;" >총 "${listCount }" 개의 게시물</p>
 		  </div>
@@ -128,15 +129,9 @@ function goBack(){
 				   <div class=" dropdown drp">
 				  	 <select name="searchType" class="form-control"  id="searchType">
 			                 <option class="dropdown-item"  value="all" <c:out value="${pageMaker.searchType eq 'all' ? 'selected' : '' }"/>> 전체</option>
-			                 <option class="dropdown-item" id="headType"  value="board_head" <c:out value="${pageMaker.searchType eq 'board_head' ? 'selected' : '' }"/>> 말머리</option>
 			                 <option class="dropdown-item"  value="board_writer"  <c:out value="${pageMaker.searchType eq 'board_writer' ? 'selected' : '' }"/>> 작성자</option>
 			                 <option class="dropdown-item"  value="board_title" <c:out value="${pageMaker.searchType eq 'board_title' ? 'selected' : '' }"/>> 제목</option>
 			                 <option class="dropdown-item"  value="board_content" <c:out value="${pageMaker.searchType eq 'board_content' ? 'selected' : '' }"/>> 내용</option>
-			           </select>
-			           <select name="searchType" class="form-control"  id="headSelect">
-			                 <option class="dropdown-item"  value="board_head" <c:out value="${pageMaker.searchType eq 'board_head' ? 'selected' : '' }"/>> 유머</option>
-			                 <option class="dropdown-item"  value="board_writer"  <c:out value="${pageMaker.searchType eq 'board_writer' ? 'selected' : '' }"/>> 정보</option>
-			                 <option class="dropdown-item"  value="board_title" <c:out value="${pageMaker.searchType eq 'board_title' ? 'selected' : '' }"/>> 기타</option>
 			           </select>
 				      <input class="form-control mr-sm-2" name="keyword" id="keywordInput"  value="${pageMaker.keyword }" type="search" placeholder="검색어를 입력하세요" aria-label="Search">
 				      <button class="btn btn-primary my-2 my-sm-0" type="submit" id="btnSearch">검색</button>
@@ -205,30 +200,30 @@ function goBack(){
 					</c:choose>
 					</table>
 					<div class="writeBtn">
-						<a href="${pageContext.request.contextPath}/board/regist">
+						<a href="<c:url value="/board/regist"/>">
 							<input class="btn btn-primary" type="button" value="글쓰기">
 						</a>
 					</div>
 				</div>
-
 					<!------------------------------------------------- 페이징------------------------------------------->
 					<div class="nav">
 					<nav aria-label="Page navigation example">
                         <ul class="pagination">
 					 	  	 <c:if test="${pageMaker.prev}">
 					 	  	 	<li class="page-item">
-						 	  	 	<a class="page-link" href="list${pageMaker.makeSearch(pageMaker.startPage -1)}">
+						 	  	 	<a class="page-link" href="${pageMaker.makeSearch(pageMaker.startPage -1)}">
 						 	  	 	&laquo;
 						 	  	 	</a></li>
 					 	  	 </c:if>
 					 	  
 					 	  	 <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage}" var="idx">
-						 	  	 	 <li class="page-item ${pageMaker.page ==idx?  "class=active":"" }">
-							 	  	 	   <a class="page-link" href="list${pageMaker.makeSearch(idx)}">${idx}</a></li>
+						 	  	 	 <li class="page-item ${pageMaker.page ==idx? 'active' : ''}" >
+							 	  	 	   <a class="page-link" href="${pageMaker.makeSearch(idx)}">${idx}</a>
+							 	  	 </li>
 					 	  	 </c:forEach>	
 					 	  	 
 					 	  	 <c:if test="${pageMaker.next && pageMaker.endPage >0 }">
-					 	  	    <li class="page-item"><a class="page-link" href="list${pageMaker.makeSearch(pageMaker.endPage +1)}">&raquo;</a></li>
+					 	  	    <li class="page-item"><a class="page-link" href="${pageMaker.makeSearch(pageMaker.endPage +1)}">&raquo;</a></li>
 					 	  	 </c:if> 
 					 	  </ul>
                        </nav>   

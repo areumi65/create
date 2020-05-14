@@ -1,10 +1,13 @@
 package com.ar.project.repository;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ar.project.entity.BoardDto;
 import com.ar.project.entity.FileDto;
-import com.ar.project.entity.PagingVO;
 import com.ar.project.service.PageMaker;
 
 @Repository
@@ -55,7 +57,7 @@ public class BoardDaoImpl implements BoardDao{
 
 
 	@Override
-	public void upload(FileDto fileDto) {
+	public void fileUpload(FileDto fileDto) {
 		sqlSession.insert("board.upload",fileDto);
 	}
 
@@ -88,6 +90,38 @@ public class BoardDaoImpl implements BoardDao{
 	@Override
 	public void delete(int board_no) {
 		sqlSession.delete("board.delete",board_no);
+	}
+
+
+	@Override
+	public List<FileDto> getFileList(int board_no) {
+		return sqlSession.selectList("board.fileList", board_no);
+	}
+
+
+	@Override
+	public FileDto getFileNum(int file_no) {
+		return sqlSession.selectOne("board.getFileNum",file_no);
+	}
+
+
+	@Override
+	public byte[] getFileName(String file_savename) throws IOException {
+		File file = new File(dir, file_savename);
+		byte[] data = FileUtils.readFileToByteArray(file);
+		return data;
+	}
+
+
+	@Override
+	public void filedelete(int board_no) {
+		sqlSession.delete("board.fileDelete", board_no);
+	}
+
+
+	@Override
+	public void deleteFileNo(int file_no) {
+		sqlSession.delete("board.deleteFileNo",file_no);
 	}
 
 

@@ -2,51 +2,60 @@ package com.ar.project.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
-import com.ar.project.entity.BoardDto;
-import com.ar.project.entity.FileDto;
-import com.ar.project.repository.BoardDao;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 public class FileServiceImpl implements FileService{
-
-	@Autowired
-	private BoardDao boardDao;
+	Path uploadPath;
 	
-	@Override
-	public void upload(FileDto fileDto) throws IllegalStateException, IOException {
-			
-		List<FileDto> list = new ArrayList<>();
-		for(MultipartFile mf : fileDto.getFile())	{
-			
-			int file_no = boardDao.getFileSequence();
-			list.add(fileDto.builder()
-									.file_no(file_no)
-									.file_uploadname(mf.getOriginalFilename())
-									.file_savename(UUID.randomUUID().toString())
-									.file_size(mf.getSize())
-									.file_type(fileDto.getFile_type())
-									.board_no(fileDto.getBoard_no())
-									.build());
-		}
-			File dir = new File("D:/upload");
-			dir.mkdir();		
-			
-			for(int i = 0; i <list.size(); i++) {
-				MultipartFile mf = fileDto.getFile().get(i);
-				FileDto dto = list.get(i);
-				File target = new File(dir, String.valueOf(list.get(i).getFile_no()));
-				mf.transferTo(target);
-				String  mimeType = new Tika().detect(target);
-				fileDto.setFile_type(mimeType);
-				boardDao.upload(dto);
-			}
+	@PostConstruct
+	void init() {
+		uploadPath = Paths.get("/upload");
 	}
 	
+	@Override
+	public List<Map<String, Object>> fileUpload(HttpServletRequest request) {
+		List<Map<String, Object>> uploadedFileList = new ArrayList<>();
+		
+		try {
+			MultipartRequest mRequest = (MultipartRequest)request;
+			Iterator<String> it = mRequest.getFileNames();
+			while(it.hasNext()) {
+				String fileName = it.next();
+				List<MultipartFile> mFileList = mRequest.getFiles(fileName);
+				
+				for(MultipartFile mFile : mFileList) {
+					String orgFileName = mFile.getOriginalFilename();
+					String saveFileName = UUID.randomUUID().toString();
+					
+					Path filePath = uploadPath.resolve(saveFileName);
+					File file = filePath.toFile();
+					mFile.transferTo(file);
+					
+					Map<String, Object> fileMap = new HashMap<>();
+					fileMap.put("orgFileName"  , orgFileName);
+					fileMap.put("saveFileName" , saveFileName);
+					fileMap.put("filePath"     , filePath.toString());
+					fileMap.put("fileSize"     , mFile.getSize());
+					uploadedFileList.add(fileMap);
+				}
+			}
+		} catch (IllegalStateException e) {
+		} catch (IOException e) {
+		}
+		
+		return uploadedFileList;
+	}
 }

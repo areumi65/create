@@ -47,13 +47,15 @@
 	
 
 </body>
-<a href="${pageContext.request.contextPath}/board/list">
-	<button>글목록</button>
-</a>
-
-<a href="${pageContext.request.contextPath}/board/regist">
-	<button>글등록</button>
-</a>
+<div style="margin-top:200px;">
+	<a href="${pageContext.request.contextPath}/board/list">
+		<button class="btn btn-primary" >글목록</button>
+	</a>
+	
+	<a href="${pageContext.request.contextPath}/board/regist">
+		<button class="btn btn-primary" >글등록</button>
+	</a>
+</div>
 
 
 

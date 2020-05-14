@@ -1,11 +1,13 @@
 package com.ar.project.service;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import com.ar.project.entity.FileDto;
+import javax.servlet.http.HttpServletRequest;
 
 public interface FileService {
 
-		void upload(FileDto fileDto) throws IllegalStateException, IOException;
+	List<Map<String, Object>> fileUpload(HttpServletRequest request);
+
 	
 }

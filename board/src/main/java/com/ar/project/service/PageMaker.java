@@ -24,6 +24,8 @@ public class PageMaker {
      
     private int tempEndPage; //마지막 페이지
      
+    private String sortList="desc";
+    
     //검색처리 추가
     private String searchType="";
     private String keyword="";
@@ -109,13 +111,26 @@ public class PageMaker {
                 .queryParam("page", page)
                 .queryParam("perPageNum", perPageNum)
                 .queryParam("searchType", searchType)
+                .queryParam("sortList", sortList)
                 .queryParam("keyword", keyword)
                 .build();
         return uriComponents.toUriString();
     }
      
-     
-    public int getPage() {
+    
+    
+    
+    public String getSortList() {
+		return sortList;
+	}
+
+
+	public void setSortList(String sortList) {
+		this.sortList = sortList;
+	}
+
+
+	public int getPage() {
         return page;
     }
  
@@ -212,7 +227,7 @@ public class PageMaker {
         return "PageMakerAndSearch [page=" + page + ", perPageNum=" + perPageNum + ", pageStart=" + pageStart
                 + ", totalCount=" + totalCount + ", startPage=" + startPage + ", endPage=" + endPage + ", prev=" + prev
                 + ", next=" + next + ", displayPageNum=" + displayPageNum + ", tempEndPage=" + tempEndPage
-                + ", searchType=" + searchType + ", keyword=" + keyword + "]";
+                + ", sortList=" + sortList + ", searchType=" + searchType + ", keyword=" + keyword + "]";
     }
  
 

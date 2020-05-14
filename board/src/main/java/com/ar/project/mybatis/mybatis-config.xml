@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<typeAliases>
 		<typeAlias type="com.ar.project.entity.BoardDto" alias="boardDto"/>
 		<typeAlias type="com.ar.project.entity.FileDto" alias="fileDto"/>
-		<typeAlias type="com.ar.project.entity.PagingVO" alias="pagingVo"/>
+		<typeAlias type="com.ar.project.entity.FileVO" alias="fileVo"/>
 	</typeAliases>
 	
 </configuration>

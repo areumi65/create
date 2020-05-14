@@ -8,20 +8,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="board">
 	
 	<sql id="search">
-		<if test="searchType != null">
-			<if test="searchType == 'board_title'.toString()">
+		<if test="@com.ar.common.util.StringUtil@isNotEmpty(searchType)">
+			<if test="@com.ar.common.util.StringUtil@equals(searchType, 'board_title')">
 				and board_title like CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="searchType == 'board_head'.toString()">
+			<if test="@com.ar.common.util.StringUtil@equals(searchType, 'board_head')">
 				and board_head like CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="searchType == 'board_content'.toString()">
+			<if test="@com.ar.common.util.StringUtil@equals(searchType, 'board_content')">
 				and board_content like CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="searchType == 'board_writer'.toString()">
+			<if test="@com.ar.common.util.StringUtil@equals(searchType, 'board_writer')">
 				and board_writer like CONCAT('%', #{keyword}, '%')
 			</if>
-			<if test="searchType == 'all'.toString()">
+			<if test="@com.ar.common.util.StringUtil@equals(searchType, 'all')">
 				and ( 
 	                     board_title like CONCAT('%', #{keyword}, '%')
 	                    OR
@@ -34,23 +34,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</if>
 	</sql>
-	
-<!-- 	<sql id="orderBy"> -->
-<!-- 		<if test=""> -->
-<!-- 			order by board_no desc -->
-<!-- 		</if> -->
-<!-- 		<if test=""> -->
-<!-- 			order by board_no asc -->
-<!-- 		</if>	 -->
-<!-- 	</sql> -->
+	<sql id="orderBy">
+		<if test="@com.ar.common.util.StringUtil@equals(sortList, 'desc')">
+			order by board_no desc
+		</if>
+		<if test="@com.ar.common.util.StringUtil@equals(sortList, 'asc')">
+			order by board_no asc
+		</if>
+	</sql>
 	
 	
 	<select id="boardList" resultType="boardDto" >
-		select * from board  where board_no > 0
-			<include refid="search"></include>
-<!-- 			<include refid="orderBy"></include> -->
-		order by board_no desc
-		limit #{pageStart}, #{perPageNum}
+		SELECT board_no
+				   , board_head
+				   , board_title
+				   , board_write_date
+				   , board_writer
+				   , board_readcount
+				   , board_content
+   FROM board
+ WHERE board_no > 0
+<include refid="search"></include>
+<include refid="orderBy"></include>
+	LIMIT #{pageStart}, #{perPageNum}
 	</select>
 	
 	<select id="listCount" resultType="int" >
@@ -61,8 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="regist" parameterType="boardDto">
 		insert into board values(
 					#{board_no},
-					#{board_head},#{board_title},now(),#{board_writer},0,
-					#{board_pw},#{board_content}
+					#{board_head},#{board_title},now(),#{board_writer},0,0,
+					#{board_content}
 		)
 	</insert>
 	
@@ -76,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				board_no= #{board_no}
 	</update>
 	
+	
 	<select id="getBoardSequence" resultType="int">
 		select (select * from (select max(board_no)+1 from board) next) from dual
 	</select>
@@ -84,12 +91,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select (select * from (select max(file_no)+1 from file) next) from dual
 	</select>
 	
-	<insert id="upload" parameterType="int">
+	<insert id="upload" parameterType="fileDto">
 		insert into file values(
 			#{file_no},
 			#{file_uploadname},
 			#{file_savename},
-			#{file_type},
 			#{file_size},
 			#{board_no}
 		)
@@ -100,12 +106,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from board where board_no = #{board_no}
 	</select>
 	
+	<select id="fileList" parameterType="int" resultType="fileDto">
+		select * from file where board_no=#{board_no}
+	</select>
+	
+	<select id="getFileNum" resultType="fileDto" parameterType="int">
+		select * from file where file_no=#{file_no}
+	</select>
+	
 	<update id="readCount" parameterType="int">
 		update board set board_readCount = board_readCount+1 where board_no = #{board_no}
 	</update>
 	
 	<delete id="delete" parameterType="int">
 		delete from board where board_no = #{board_no}
+	</delete>
+	
+	<delete id="fileDelete" parameterType="int">
+		delete from file where board_no=#{board_no}
+	</delete>
+	
+	<delete id="deleteFileNo" parameterType="int">
+		delete from file where file_no=#{file_no}
 	</delete>
 	
 </mapper>

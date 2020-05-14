@@ -16,8 +16,9 @@ public class BoardDto {
 								board_title,
 								board_write_date, 
 								board_writer, 
-								board_content;
-	
+								board_content,
+								deleteFileNo;
+							
 	private int reply_no, reply_pw;
 	private String reply_writer, reply_wtite_date, reply_content;
 	
