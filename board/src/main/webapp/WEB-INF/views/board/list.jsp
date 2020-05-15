@@ -173,25 +173,27 @@ function goBack(){
 							</tr>
 						</c:forEach>
 						</c:when>
-						<c:when test="${listCount<1 }">
-								<tr>
-									<td colspan="5" align="center" style="padding:150px 0 150px;">
-									검색 결과가 없습니다.
-									<div style="margin-top:20px;">
-											<a  href="${pageContext.request.contextPath}/board/list">
-												<input type="button" class="btn btn-secondary" value="목록보기" >
-											</a>
-									</div>
-									</td>
-								</tr>
-						</c:when>
-						<c:otherwise>
+						<c:when test="${listCount<1}">
 								<tr>
 									<td colspan="5" align="center" style="padding:150px 0 150px;">
 									게시글이 없습니다.
 									<div style="margin-top:20px;">
 											<a  href="${pageContext.request.contextPath}/board/regist">
 												<input type="button" class="btn btn-secondary" value="글 등록하기" >
+											</a>
+									</div>
+									</td>
+								</tr>
+						</c:when>
+						<c:otherwise>
+							<c:if test="${pageMaker.makeSearch.size()<1 }">
+							</c:if>
+							<tr>
+									<td colspan="5" align="center" style="padding:150px 0 150px;">
+									검색 결과가 없습니다.
+									<div style="margin-top:20px;">
+											<a  href="${pageContext.request.contextPath}/board">
+												<input type="button" class="btn btn-secondary" value="목록보기" >
 											</a>
 									</div>
 									</td>

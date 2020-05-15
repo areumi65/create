@@ -33,7 +33,7 @@ public class PageMaker {
      
     public PageMaker() {
         this.page=1;          //초기 페이지는 1 
-        this.perPageNum=10;  //limit 10 개씩 보여준다.
+        this.perPageNum=5;  //limit 10 개씩 보여준다.
     }
      
      

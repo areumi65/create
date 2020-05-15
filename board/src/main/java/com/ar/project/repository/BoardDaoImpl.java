@@ -2,6 +2,7 @@ package com.ar.project.repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ar.project.entity.BoardDto;
 import com.ar.project.entity.FileDto;
+import com.ar.project.entity.FileVO;
 import com.ar.project.service.PageMaker;
 
 @Repository
@@ -82,8 +84,37 @@ public class BoardDaoImpl implements BoardDao{
 
 
 	@Override
-	public void edit(BoardDto boardDto) {
-		sqlSession.update("board.edit",boardDto);
+	public void edit(BoardDto boardDto,FileVO fileVo) {
+		try {
+			List<FileDto> fileList = new  ArrayList<>();
+			for(MultipartFile mf : fileVo.getFile()) {
+				if(mf.getOriginalFilename().length() !=0) {
+					fileList.add(FileDto.builder()
+							.file_uploadname(mf.getOriginalFilename())
+							.file_savename(UUID.randomUUID().toString())
+							.file_size(mf.getSize())
+							.board_no(boardDto.getBoard_no())
+							.build());
+				}
+			}
+			
+			File dir = new File("D:/upload");
+			dir.mkdirs();
+			
+			for(int i=0; i < fileList.size(); i++) {
+				MultipartFile mf = fileVo.getFile().get(i);
+				FileDto fileDto = fileList.get(i);
+				File target = new File(dir,fileDto.getFile_savename());
+				mf.transferTo(target);
+				int file_no = getFileSequence();
+				fileDto.setFile_no(file_no);
+				fileUpload(fileDto);
+			}
+			
+			sqlSession.update("board.edit",boardDto);
+			
+		} catch (Exception e) {
+		}
 	}
 
 
@@ -123,6 +154,8 @@ public class BoardDaoImpl implements BoardDao{
 	public void deleteFileNo(int file_no) {
 		sqlSession.delete("board.deleteFileNo",file_no);
 	}
+
+
 
 
 

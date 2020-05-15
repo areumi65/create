@@ -60,74 +60,136 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="listCount" resultType="int" >
-		select count(board_no) from board where board_no > 0
+		SELECT 
+					count(board_no) 
+		FROM board 
+		WHERE board_no > 0
 		<include refid="search"></include>
 	</select>
 	
 	<insert id="regist" parameterType="boardDto">
-		insert into board values(
-					#{board_no},
-					#{board_head},#{board_title},now(),#{board_writer},0,0,
-					#{board_content}
-		)
+		INSERT INTO board(
+					 board_no
+				   , board_head
+				   , board_title
+				   , board_write_date
+				   , board_writer
+				   , board_readcount
+				   , board_content
+					)
+		VALUES(
+					  #{board_no}
+					, #{board_head}
+					, #{board_title}
+					, now()
+					, #{board_writer}
+					, 0
+					, #{board_content}
+					)
 	</insert>
 	
 	<update id="edit" parameterType="boardDto">
-		update board 
-		set
-				board_head = #{board_head}, 
-				board_title = #{board_title},
-				board_content = #{board_content}
-		where
+		UPDATE board 
+		SET
+				  board_head = #{board_head}
+				, board_title = #{board_title}
+				, board_content = #{board_content}
+		WHERE
 				board_no= #{board_no}
 	</update>
 	
 	
 	<select id="getBoardSequence" resultType="int">
-		select (select * from (select max(board_no)+1 from board) next) from dual
+		SELECT (
+		SELECT *
+		FROM(
+				SELECT IFNULL(
+										max(board_no)+1,1
+										) 
+				FROM board) next) 
+				FROM dual
 	</select>
 	
 	<select id="getFileSequence" resultType="int">
-		select (select * from (select max(file_no)+1 from file) next) from dual
+		SELECT (
+		SELECT *
+		FROM(
+				SELECT IFNULL(max(file_no)+1,1) 
+				FROM file) next) 
+				FROM dual
 	</select>
 	
 	<insert id="upload" parameterType="fileDto">
-		insert into file values(
-			#{file_no},
-			#{file_uploadname},
-			#{file_savename},
-			#{file_size},
-			#{board_no}
+		INSERT INTO file 
+		VALUES(
+					 #{file_no}
+					, #{file_uploadname}
+					, #{file_savename}
+					, #{file_size}
+					, #{board_no}
 		)
 	</insert>
 	
 	
 	<select id="view" resultType="boardDto" parameterType="int">
-		select * from board where board_no = #{board_no}
+		SELECT board_no
+				   , board_head
+				   , board_title
+				   , board_write_date
+				   , board_writer
+				   , board_readcount
+				   , board_content 
+		FROM board 
+		WHERE board_no = #{board_no}
 	</select>
 	
 	<select id="fileList" parameterType="int" resultType="fileDto">
-		select * from file where board_no=#{board_no}
+		SELECT file_no
+				, file_uploadname
+				, file_savename
+				, file_size
+				, board_no 
+		FROM file 
+		WHERE board_no=#{board_no}
 	</select>
 	
 	<select id="getFileNum" resultType="fileDto" parameterType="int">
-		select * from file where file_no=#{file_no}
+		SELECT file_no
+					, file_uploadname
+					, file_savename
+					, file_size
+					, board_no 
+		FROM file 
+		WHERE file_no=#{file_no}
 	</select>
 	
 	<update id="readCount" parameterType="int">
-		update board set board_readCount = board_readCount+1 where board_no = #{board_no}
+		UPDATE board 
+		SET 
+			board_readCount = board_readCount+1 
+		WHERE 
+			board_no = #{board_no}
 	</update>
 	
 	<delete id="delete" parameterType="int">
-		delete from board where board_no = #{board_no}
+		DELETE FROM 
+			board 
+		WHERE 
+			board_no = #{board_no}
 	</delete>
 	
 	<delete id="fileDelete" parameterType="int">
-		delete from file where board_no=#{board_no}
+		DELETE FROM 
+			file 
+		WHERE 
+			board_no=#{board_no}
 	</delete>
 	
 	<delete id="deleteFileNo" parameterType="int">
-		delete from file where file_no=#{file_no}
+		DELETE FROM 
+			file 
+		WHERE 
+			file_no=#{file_no}
 	</delete>
 	
 </mapper>

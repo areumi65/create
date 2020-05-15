@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ar.project.entity.BoardDto;
 import com.ar.project.entity.FileDto;
+import com.ar.project.entity.FileVO;
 import com.ar.project.service.PageMaker;
 
 public interface BoardDao {
@@ -19,7 +20,7 @@ public interface BoardDao {
 		int listCount(PageMaker pageMaker);
 		BoardDto view(int board_no);
 		void readCount(int board_no);
-		void edit(BoardDto boardDto);
+		void edit(BoardDto boardDto,FileVO fileVo);
 		void delete(int board_no);
 		List<FileDto> getFileList(int board_no);
 		FileDto getFileNum(int file_no);

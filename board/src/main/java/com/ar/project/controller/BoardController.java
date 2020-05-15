@@ -72,7 +72,7 @@ public class BoardController {
 										@ModelAttribute FileVO fileVo, 
 										Model model) throws IllegalStateException, IOException {
 		boardService.registBoard(boardDto, fileVo);
-		return "redirect: ../board/list";
+		return "redirect: ../";
 	}
 	
 	
@@ -99,9 +99,9 @@ public class BoardController {
 	}
 	
 	@PostMapping("/board/edit")
-	public String edit(Model model, @ModelAttribute BoardDto boardDto, @RequestParam int board_no) {
+	public String edit(Model model,@ModelAttribute FileVO fileVo, @ModelAttribute BoardDto boardDto, @RequestParam int board_no) {
 		model.addAttribute("board_no",board_no);
-		boardDao.edit(boardDto);
+		boardDao.edit(boardDto, fileVo);
 		String deleteFileNo = boardDto.getDeleteFileNo();
 		if(StringUtil.isNotEmpty(deleteFileNo)) {
 			String[] fileArr = deleteFileNo.split(",");//
@@ -126,7 +126,7 @@ public class BoardController {
 		boardDao.filedelete(board_no);
 		boardDao.delete(board_no);
 		
-		return "redirect:../board/list";
+		return "redirect: ../";
 		
 	}
 	

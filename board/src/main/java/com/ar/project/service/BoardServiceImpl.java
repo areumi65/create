@@ -45,7 +45,6 @@ public class BoardServiceImpl implements BoardService{
 		resMap.put("boardList", boardList);
 		resMap.put("pageMaker", pageMaker);
 		resMap.put("listCount", listCount);
-
 		return resMap;
 	}
 	
@@ -59,12 +58,14 @@ public class BoardServiceImpl implements BoardService{
 			
 			List<FileDto> fileList = new  ArrayList<>();
 			for(MultipartFile mf : fileVo.getFile()) {
-				fileList.add(FileDto.builder()
-												.file_uploadname(mf.getOriginalFilename())
-												.file_savename(UUID.randomUUID().toString())
-												.file_size(mf.getSize())
-												.board_no(board_no)
-												.build());
+				if(mf.getOriginalFilename().length() !=0) {
+					fileList.add(FileDto.builder()
+							.file_uploadname(mf.getOriginalFilename())
+							.file_savename(UUID.randomUUID().toString())
+							.file_size(mf.getSize())
+							.board_no(board_no)
+							.build());
+				}
 			}
 			
 			File dir = new File("D:/upload");

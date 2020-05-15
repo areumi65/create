@@ -129,14 +129,15 @@
 		});
 		
 	});
-
 // 	function deleteFile($this){
 // 		var $ul = $('ul.list-group');
 // 		var index =  $ul.find('li').index($this);
 // 		$ul.find('li').eq(index).remove();
 // 	}
- 
- 
+ function resetFile(){
+		$("#uploadBtn").attr("type","text");
+		$("#uploadBtn").attr("type","file");
+	}
 	
 	function checkForm(){
 // 		debugger;	
@@ -212,7 +213,7 @@
 				<div class="filewrap">
 					<div style="float:left;">
 						<label for="uploadBtn" class="btn_file btn btn-light" style="float:left; margin:0 5px 5px 0">찾아보기</label>
-						<button type="button" class="btn btn-secondary" id="resetBtn" style="margin-right:5px" onClick="resetFile()">삭제</button>
+						<button type="button" class="btn btn-secondary" id="resetBtn" style="margin-right:5px" onclick="resetFile()">삭제</button>
 					</div>
 						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
 				</div>
@@ -226,9 +227,8 @@
 		</div>
 		<div class="btn-wrap">
 			<div class="btn-wrap-le">
-				<a href="${pageContext.request.contextPath}/board/list" >
+				<a href="${pageContext.request.contextPath}" >
 					<input type="button" value="목록보기" class="btn btn-secondary">
-					<button type="reset"  class="btn btn-secondary">초기화</button>
 				</a>
 			</div>
 			<div class="btn-wrap-ri">

@@ -113,7 +113,7 @@
 			var files = e.target.files;
 			console.log(files);
 			$('#resetBtn').show();
-			
+			$('.fileName').hide();
 			for(var i=0; i<files.length; i++){
 				var file = files[i];
 				var $li = $(
@@ -137,14 +137,17 @@
 		$($this).parent().parent("li").remove();
 	}
 	
-	function resetFile(){
+	function resetFile($this){
 		$("#uploadBtn").attr("type","text");
 		$("#uploadBtn").attr("type","file");
+		$("li.list-group-item").remove();
+		$("#resetBtn").hide();
+		$('.fileName').show();
 	}
 	
 	
 	function checkForm(){
-		
+// 		debugger;	
 		if(!document.frm.board_head.value){
 			alert("말머리를 선택해주세요");
 			document.frm.board_head.focus();
@@ -168,13 +171,12 @@
 			document.frm.board_content.focus();
 			return false;
 		}
-		
 		return true;
 	}
 	
  </script>  
  
- <form name="formName" action="edit"  method="post" enctype="Multipart/form-data" onsubmit="return checkForm();">
+ <form name="frm" action="edit"  method="post" enctype="Multipart/form-data" onsubmit="return checkForm();">
 	 <div id="regist">
 		<table>
 			<tr>
@@ -183,7 +185,7 @@
 			</tr>
 			<tr>
 				<td>
-					  <select class="form-control" id="sel1" name="board_head" required>
+					  <select class="form-control" id="sel1" name="board_head" >
 					   		<option value="${boardDto.board_head }" >${boardDto.board_head }</option>
 							<option>정보</option>
 							<option>유머</option>
@@ -216,10 +218,11 @@
 				<div class="filewrap">
 					<div style="float:left;">
 						<label for="uploadBtn" class="btn_file btn btn-light" style="float:left; margin:0 5px 5px 0">찾아보기</label>
-						<button type="button" class="btn btn-secondary" id="resetBtn" style="margin-right:5px" onclick="resetFile()">삭제</button>
+						<button type="button" class="btn btn-secondary" id="resetBtn" style="margin-right:5px" onclick="resetFile(this)">삭제</button>
 					</div>
 						<input type="file" name ="file" multiple="multiple" id="uploadBtn" class="uploadBtn">
 				</div>
+						<input type="text" class="fileName" readonly="readonly" placeholder="파일 업로드">
 				<ul class="list-group"  >
 				<c:forEach var="fileDto" items="${fileList}">
 					<li class="list-group-item d-flex justify-content-between align-items-center" style="z-index:2">
@@ -239,7 +242,6 @@
 					<a href="${pageContext.request.contextPath}" >
 						<input type="button" value="목록보기" class="btn btn-secondary">
 					</a>
-						<button type="reset"  class="btn btn-outline-secondary">초기화</button>
 				</div>
 				<div class="btn-wrap-ri">
 					<button type="submit" class="btn btn-primary">수정</button>
